@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export const api = axios.create({
-    baseURL: 'https://video-platform-kqvw.onrender.com'
+    baseURL: 'https://video-platform-backend-lju2.onrender.com'
 });
 
 api.interceptors.request.use((config) => {
