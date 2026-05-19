@@ -79,18 +79,31 @@ def get_videos():
     for v in videos:
         author = User.query.get(v.user_id)
         author_name = f"{author.first_name} {author.last_name}" if author else "Неизвестен"
+        # ИСПРАВЛЕНО: используем относительный URL вместо жестко заданного домена
         videos_list.append({
             "id": v.id,
             "title": v.title,
             "filename": v.filename,
             "author": author_name,
-            "stream_url": f"https://video-platform-kqvw.onrender.com/videos/stream/{v.filename}"
+            "stream_url": f"/api/videos/stream/{v.filename}"
         })
     return jsonify(videos_list), 200
 
 @api.route('/videos/stream/<filename>', methods=['GET'])
 def stream_video(filename):
-    return send_from_directory(current_app.config['UPLOAD_FOLDER'], filename)
+    from flask import send_file
+    import os
+    
+    file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+    if not os.path.exists(file_path):
+        return "Файл не найден", 404
+
+    # ВАЖНО: Убираем send_from_directory и используем send_file с conditional=True
+    # Это заставит Flask автоматически обработать Range-запросы для видео
+    return send_file(
+        file_path, 
+        conditional=True  # Эта строчка решает проблему с воспроизведением
+    )
 
 @api.route('/chat', methods=['GET'])
 def get_messages():
