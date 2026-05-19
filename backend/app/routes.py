@@ -84,7 +84,7 @@ def get_videos():
             "title": v.title,
             "filename": v.filename,
             "author": author_name,
-            "stream_url": f"https://video-platform-kqvw.onrender.com/videos/stream/{v.filename}"
+            "stream_url": f"https://video-platform-backend-lju2.onrender.com/videos/stream/{v.filename}"
         })
     return jsonify(videos_list), 200
 
